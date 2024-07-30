@@ -1,21 +1,21 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
  */
+package hospital;
 
- package com.mycompany.conexion;
-
- import java.sql.Connection;
- import java.sql.DriverManager;
- import java.sql.ResultSet;
- import java.sql.Statement;
- import java.sql.PreparedStatement;
- import java.util.Scanner;
- /**
-  *
-  * @author camper
-  */
- public class Conexion {
-     Connection con;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.sql.PreparedStatement;
+import java.util.Scanner;
+/**
+ *
+ * @author camper
+ */
+public class Hospital {
+         Connection con;
      public Connection Conexion() {
          try {
              Class.forName("com.mysql.cj.jdbc.Driver");
@@ -27,7 +27,7 @@
      }
      
      public void addpersona(Scanner sc){
-         Conexion cn = new Conexion();
+         Hospital cn = new Hospital();
          Connection con = cn.Conexion();
          PreparedStatement ps = null;
  
@@ -58,7 +58,7 @@
      }
      
      public void addHospital(Scanner sc){
-         Conexion cn = new Conexion();
+         Hospital cn = new Hospital();
          Connection con = cn.Conexion();
          PreparedStatement ps = null;
          
@@ -67,7 +67,7 @@
      }
      
      public void viewpersona(){
-         Conexion cn = new Conexion();
+         Hospital cn = new Hospital();
          Connection con = cn.Conexion();
          Statement st;
          ResultSet rs;
@@ -86,7 +86,7 @@
      }
      
      public void updatepersona(Scanner sc) {
-         Conexion cn = new Conexion();
+         Hospital cn = new Hospital();
          Connection con = cn.Conexion();
          PreparedStatement ps = null;
          ResultSet rs = null;
@@ -135,7 +135,7 @@
      }
      
      public void deletepersona() {
-         Conexion cn = new Conexion();
+         Hospital cn = new Hospital();
          Connection con = cn.Conexion();
          Scanner sc = new Scanner(System.in);
          PreparedStatement ps = null;
@@ -190,10 +190,8 @@
          }
          return entrada;
      }
-     
-     
-     public static void main(String[] args) {
-         Conexion cn = new Conexion();
+    public static void main(String[] args) {
+                 Hospital cn = new Hospital();
          Scanner sc = new Scanner(System.in);
          
          int option;
@@ -230,7 +228,6 @@
                      System.out.println("Opción inválida. Intente de nuevo");
              }
          } while (option != 5);
-         
-     }
-     
- }
+    }
+    
+}

@@ -1,5 +1,4 @@
-Create database SIHjava;
-use SIHjava;
+use b7fc9nohtrp1anharl2f;
 
 -- Crear tabla persona
 create table persona(
