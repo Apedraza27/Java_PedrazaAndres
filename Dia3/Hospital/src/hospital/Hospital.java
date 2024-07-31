@@ -4,31 +4,53 @@
  */
 package hospital;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Properties;
 import java.util.Scanner;
+import javax.swing.JOptionPane;
 /**
  *
  * @author camper
  */
 public class Hospital {
-         Connection con;
+     private Connection cx;
      public Connection Conexion() {
-         try {
-             Class.forName("com.mysql.cj.jdbc.Driver");
-             con = DriverManager.getConnection("jdbc:mysql://bhr9agww1d8bmr3zluxy-mysql.services.clever-cloud.com:3306/bhr9agww1d8bmr3zluxy", "uuhh71qcx2qp0j1w", "Mbk4GjR8YAp0mBh0vwHu");
-         } catch (Exception ex) {
-             System.err.println("Error" + ex);
-         }
-         return con;
-     }
+          Properties props = new Properties();
+        try (InputStream input = getClass().getClassLoader().getResourceAsStream("Config.properties")) {
+            if (input == null) {
+                throw new IllegalStateException("Archivo Config.properties no encontrado");
+            }
+
+            props.load(input);
+
+            String url = props.getProperty("Url");
+            String user = props.getProperty("User");
+            String password = props.getProperty("Password");
+
+            if (url == null || user == null || password == null) {
+                throw new IllegalStateException("Una o más propiedades de conexión no están definidas");
+            }
+
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            cx = DriverManager.getConnection(url, user, password);
+            System.out.println("Conexión exitosa a la base de datos");
+        } catch (IOException | ClassNotFoundException | SQLException | IllegalStateException e) {
+            System.err.println("Error en la conexión :(, error: " + e);
+            JOptionPane.showMessageDialog(null, "Error en la conexión: " + e.toString());
+        }
+        return cx;
+    }
      
      public void addpersona(Scanner sc){
          Hospital cn = new Hospital();
-         Connection con = cn.Conexion();
+         Connection cx = cn.Conexion();
          PreparedStatement ps = null;
  
          String nombres = obtenerEntradaObligatoria(sc, "los nombres");
@@ -39,7 +61,7 @@ public class Hospital {
          String titulo = sc.nextLine();
  
          try {
-             ps = con.prepareStatement("INSERT INTO persona (nombres, apellidos, direccion, fecha_nacimiento, titulo) VALUES (?, ?, ?, ?, ?)");
+             ps = cx.prepareStatement("INSERT INTO persona (nombres, apellidos, direccion, fecha_nacimiento, titulo) VALUES (?, ?, ?, ?, ?)");
              ps.setString(1, nombres);
              ps.setString(2, apellidos);
              ps.setString(3, direccion);
@@ -50,7 +72,7 @@ public class Hospital {
              System.out.println("Los datos se insertaron correctamente. :)");
              
              ps.close();
-             con.close();
+             cx.close();
  
          } catch (Exception e) {
              System.out.println("Error al insertar los datos: " + e.getMessage());
@@ -68,17 +90,17 @@ public class Hospital {
      
      public void viewpersona(){
          Hospital cn = new Hospital();
-         Connection con = cn.Conexion();
+         Connection cx = cn.Conexion();
          Statement st;
          ResultSet rs;
          
          try {
-             st = cn.con.createStatement();
+             st = cn.cx.createStatement();
              rs = st.executeQuery("select * from persona");
              while (rs.next()) {
                  System.out.println(rs.getInt("id") + " - " + rs.getString("nombres") + " - " + rs.getString("apellidos") + " - " + rs.getString("direccion") + " - " + rs.getDate("fecha_nacimiento") + " - " + rs.getString("titulo"));
              }
-             con.close();
+             cx.close();
          } catch (Exception e) {
              System.out.println("Error al ver los datos: " + e.getMessage());
          }
@@ -87,7 +109,7 @@ public class Hospital {
      
      public void updatepersona(Scanner sc) {
          Hospital cn = new Hospital();
-         Connection con = cn.Conexion();
+         Connection cx = cn.Conexion();
          PreparedStatement ps = null;
          ResultSet rs = null;
          cn.viewpersona();
@@ -97,14 +119,14 @@ public class Hospital {
              int id = sc.nextInt();
              sc.nextLine();
  
-             ps = con.prepareStatement("SELECT COUNT(*) FROM persona WHERE id = ?");
+             ps = cx.prepareStatement("SELECT COUNT(*) FROM persona WHERE id = ?");
              ps.setInt(1, id);
              rs = ps.executeQuery();
  
              if (rs.next() && rs.getInt(1) > 0) {
                  ps.close();  
  
-                 ps = con.prepareStatement("UPDATE persona SET nombres = ?, apellidos = ?, direccion = ?, fecha_nacimiento = ?, titulo = ? WHERE id = ?");
+                 ps = cx.prepareStatement("UPDATE persona SET nombres = ?, apellidos = ?, direccion = ?, fecha_nacimiento = ?, titulo = ? WHERE id = ?");
  
                  String nombres = obtenerEntradaObligatoria(sc, "los nombres actualizados");
                  String apellidos = obtenerEntradaObligatoria(sc, "los apellidos actualizados");
@@ -127,7 +149,7 @@ public class Hospital {
              }
              if (rs != null) rs.close();
              if (ps != null) ps.close();
-             if (con != null) con.close();
+             if (cx != null) cx.close();
  
          } catch (Exception e) {
              System.out.println("Error al actualizar los datos: " + e.getMessage());
@@ -136,7 +158,7 @@ public class Hospital {
      
      public void deletepersona() {
          Hospital cn = new Hospital();
-         Connection con = cn.Conexion();
+         Connection cx = cn.Conexion();
          Scanner sc = new Scanner(System.in);
          PreparedStatement ps = null;
          ResultSet rs = null;
@@ -147,14 +169,14 @@ public class Hospital {
              int id = sc.nextInt();
              sc.nextLine();
  
-             ps = con.prepareStatement("SELECT COUNT(*) FROM persona WHERE id = ?");
+             ps = cx.prepareStatement("SELECT COUNT(*) FROM persona WHERE id = ?");
              ps.setInt(1, id);
              rs = ps.executeQuery();
  
              if (rs.next() && rs.getInt(1) > 0) {
                  ps.close();  
                  
-                 ps = con.prepareStatement("DELETE FROM persona WHERE id = ?");
+                 ps = cx.prepareStatement("DELETE FROM persona WHERE id = ?");
                  ps.setInt(1, id);
                  
                  int NFilas = ps.executeUpdate();
@@ -169,7 +191,7 @@ public class Hospital {
              
              if (rs != null) rs.close();
              if (ps != null) ps.close();
-             if (con != null) con.close();
+             if (cx != null) cx.close();
              
          }catch(Exception e){
              System.out.println("Error al eliminara los datos: " + e.getMessage());
