@@ -8,13 +8,51 @@ package Patrones_estructurales;
  *
  * @author andre
  */
-public class Adapter {
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        // TODO code application logic here
+// Clase existente
+class MotorElectrico {
+    public void conectar() {
+        System.out.println("Conectando motor eléctrico.");
     }
-    
+
+    public void activar() {
+        System.out.println("Activando motor eléctrico.");
+    }
+}
+
+// Clase con interfaz incompatible
+class MotorCombustion {
+    public void encender() {
+        System.out.println("Encendiendo motor de combustión.");
+    }
+
+    public void acelerar() {
+        System.out.println("Acelerando motor de combustión.");
+    }
+}
+
+// Adaptador
+class MotorAdapter extends MotorElectrico {
+    private MotorCombustion motorCombustion;
+
+    public MotorAdapter(MotorCombustion motorCombustion) {
+        this.motorCombustion = motorCombustion;
+    }
+
+    @Override
+    public void conectar() {
+        motorCombustion.encender();
+    }
+
+    @Override
+    public void activar() {
+        motorCombustion.acelerar();
+    }
+}
+
+public class Adapter {
+    public static void main(String[] args) {
+        MotorElectrico motor = new MotorAdapter(new MotorCombustion());
+        motor.conectar();  // Encendiendo motor de combustión
+        motor.activar();   // Acelerando motor de combustión
+    }
 }
