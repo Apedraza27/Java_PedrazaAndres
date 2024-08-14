@@ -13,3 +13,9 @@ Encontraras la documentación de los principios SOLID estan en el [docs]https://
 Documentacion patrones creacionales [docs]
 https://docs.google.com/document/d/19SYYNjGRcym1c14mYvdgwXU7nuatC4gi5fC1h5KUFhI/edit?usp=sharing
 
+
+Documentacion Quiz [docs]
+
+
+
+Documentacion patrones estructurales y de comportamiento[docs]
