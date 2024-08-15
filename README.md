@@ -19,3 +19,4 @@ Documentacion Quiz [docs]
 
 
 Documentacion patrones estructurales y de comportamiento[docs]
+https://docs.google.com/document/d/1uRjUaYyKYuRUIV4WAVlDCYnXaOak47DZo37v48ZvLxA/edit?usp=sharing
